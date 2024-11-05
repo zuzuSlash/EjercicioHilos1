@@ -1,7 +1,14 @@
 package org.example
 
-import java.util.Scanner
 
+class PrimesThreads (private val n: Int) : Runnable {
+    private var _num = 0
+    val num: Int get() = _num
+
+    override fun run(){
+
+    }
+}
 
 fun isPrime(n: Int): Boolean {
     for (i in 2..Math.sqrt(n.toDouble()).toInt()) {
@@ -14,14 +21,13 @@ fun isPrime(n: Int): Boolean {
 
 
 
-fun main() {
-    val scanner = Scanner(System.`in`)
-    println("Introduce un numero: ")
-    val num = scanner.nextInt()
-
-    val mid = num / 2
+fun main(args: Array<String>) {
+    val mid = args[0].toInt() / 2
     val primes1 = mutableListOf<Int>()
     val primes2 = mutableListOf<Int>()
+
+    val task1 = PrimesThreads(2)
+    val task2 = PrimesThreads(0)
 
     val thread1 = Thread {
         for (i in 2..mid) {
@@ -31,9 +37,9 @@ fun main() {
         }
     }
     val thread2 = Thread {
-        for (i in (mid + 1) .. num) {
+        for (i in (mid + 1) .. args[0].toInt()) {
             if (isPrime(i)) {
-                primes1.add(i)
+                primes2.add(i)
             }
         }
     }
@@ -44,7 +50,8 @@ fun main() {
     thread1.join()
     thread2.join()
 
-    println("Numeros de $num,  2 al $mid => $primes1")
+    println(primes1)
+    println(primes2)
 
 
 }
