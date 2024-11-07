@@ -1,16 +1,18 @@
 package org.example
 
+class PrimesThreads(private val start: Int, private val end: Int, private val result: MutableList<Int>) : Runnable {
 
-class PrimesThreads (private val n: Int) : Runnable {
-    private var _num = 0
-    val num: Int get() = _num
-
-    override fun run(){
-
+    override fun run() {
+        for (i in start..end) {
+            if (isPrime(i)) {
+                result.add(i)
+            }
+        }
     }
 }
 
 fun isPrime(n: Int): Boolean {
+    if (n <= 1) return false
     for (i in 2..Math.sqrt(n.toDouble()).toInt()) {
         if (n % i == 0) {
             return false
@@ -19,30 +21,17 @@ fun isPrime(n: Int): Boolean {
     return true
 }
 
-
-
 fun main(args: Array<String>) {
-    val mid = args[0].toInt() / 2
+    val num = args[0].toInt()
+    val mid = num / 2
     val primes1 = mutableListOf<Int>()
     val primes2 = mutableListOf<Int>()
 
-    val task1 = PrimesThreads(2)
-    val task2 = PrimesThreads(0)
+    val task1 = PrimesThreads(2, mid, primes1)
+    val task2 = PrimesThreads(mid + 1, num, primes2)
 
-    val thread1 = Thread {
-        for (i in 2..mid) {
-            if (isPrime(i)) {
-                primes1.add(i)
-            }
-        }
-    }
-    val thread2 = Thread {
-        for (i in (mid + 1) .. args[0].toInt()) {
-            if (isPrime(i)) {
-                primes2.add(i)
-            }
-        }
-    }
+    val thread1 = Thread(task1)
+    val thread2 = Thread(task2)
 
     thread1.start()
     thread2.start()
@@ -50,8 +39,6 @@ fun main(args: Array<String>) {
     thread1.join()
     thread2.join()
 
-    println(primes1)
-    println(primes2)
-
-
+    println("Primos de 2 a $mid: $primes1")
+    println("Primos de ${mid + 1} a $num: $primes2")
 }
